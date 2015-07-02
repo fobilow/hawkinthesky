@@ -51,7 +51,7 @@ else
 
 if($client->isAccessTokenExpired())
 {
-  $client->refreshToken($client->getRefreshToken());
+  unset($_SESSION['access_token']);
 }
 
 if($client->getAccessToken())
@@ -93,12 +93,9 @@ if($client->getAccessToken())
   }
 
   $statsRows = array_chunk($stats, $cols);
-  include_once 'dashboard.php';
 }
-elseif(isset($authUrl))
-{
-  echo "<a class='login' href='" . $authUrl . "'>Connect Me!</a>";
-}
+include_once 'dashboard.php';
+
 
 
 

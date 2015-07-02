@@ -42,6 +42,7 @@
 <body>
 <div class="infobar"><?= date('d M Y H:i A') ?></div>
 <div class="container-fluid">
+  <?php if(isset($statsRows)): ?>
   <?php foreach($statsRows as $row): ?>
   <div class="row">
       <?php foreach($row as $stats): ?>
@@ -69,6 +70,18 @@
       <?php endforeach; ?>
   </div>
   <?php endforeach; ?>
+  <?php endif; ?>
+
+  <?php if(isset($authUrl)): ?>
+    <div class="text-center">
+      <h1 class="page-header">Hawk In The Sky </h1>
+      <p class="text-muted" style="font-size:20px;">Google Analytics Dashboard</p>
+      <p style="font-size:14px;">Login with the google account that has access to your analytics</p>
+      <a class='btn btn-success btn-lg' href='" . $authUrl . "'>Login with Google To Begin!</a>
+    </div>
+  <?php endif; ?>
+
+
   <div class="push"></div>
 </div>
 <div class="footer text-center">
