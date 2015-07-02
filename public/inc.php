@@ -54,7 +54,7 @@ class Hawk
        */
       foreach($properties as $property)
       {
-        if($data['ga_property_id'] > 0)
+        if($property->getDefaultProfileId() > 0)
         {
           $data['name']           = $property->getName();
           $data['ga_property_id'] = $property->getDefaultProfileId();
