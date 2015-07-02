@@ -52,6 +52,18 @@
       <a class='btn btn-success btn-lg' href="<?= $authUrl ?>">Login with Google To Begin!</a>
     </div>
   <?php endif; ?>
+  <?php if($errors): ?>
+    <div class="text-center">
+      <h1 class="page-header">Hawk In The Sky </h1>
+      <p class="text-muted" style="font-size:20px;">Google Analytics Dashboard</p>
+      <p style="font-size:14px;">I encountered some errors while trying to connect to your analytics account</p>
+      <ul style="font-size:12px; color:red;">
+      <?php foreach($errors as $error): ?>
+       <li><?= $error ?></li>
+      <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php endif; ?>
 
 
   <div class="push"></div>
