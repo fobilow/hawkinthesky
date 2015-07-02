@@ -77,7 +77,7 @@
       <h1 class="page-header">Hawk In The Sky </h1>
       <p class="text-muted" style="font-size:20px;">Google Analytics Dashboard</p>
       <p style="font-size:14px;">Login with the google account that has access to your analytics</p>
-      <a class='btn btn-success btn-lg' href='" . $authUrl . "'>Login with Google To Begin!</a>
+      <a class='btn btn-success btn-lg' href="<?= $authUrl ?>">Login with Google To Begin!</a>
     </div>
   <?php endif; ?>
 
