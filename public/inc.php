@@ -54,31 +54,31 @@ class Hawk
        */
       foreach($properties as $property)
       {
-        $data['name']           = $property->getName();
-        $data['ga_property_id'] = $property->getDefaultProfileId();
-        $data['url']            = $property->getWebsiteUrl();
-        $data['time']           = time();
-
-        $return[] = $data;
-
-        //TODO - proper handling of duplicate keys and other sql errors
-        try
+        if($data['ga_property_id'] > 0)
         {
-          if($data['ga_property_id'] > 0)
+          $data['name']           = $property->getName();
+          $data['ga_property_id'] = $property->getDefaultProfileId();
+          $data['url']            = $property->getWebsiteUrl();
+          $data['time']           = time();
+
+          $return[] = $data;
+
+          //TODO - proper handling of duplicate keys and other sql errors
+          try
           {
             self::dbConn()->insert('websites', $data, true);
           }
-          else
+          catch(Exception $e)
           {
-            error_Log(
-              "Could not register " . $data['name']
-              . " because it has property_id=0"
-            );
+            error_log($e->getMessage());
           }
         }
-        catch(Exception $e)
+        else
         {
-          error_log($e->getMessage());
+          error_Log(
+            "Could not register " . $data['name']
+            . " because it has property_id=0"
+          );
         }
       }
     }
