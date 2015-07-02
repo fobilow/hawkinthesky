@@ -75,8 +75,8 @@ class Hawk
         }
         else
         {
-          error_Log(
-            "Could not register " . $data['name']
+          error_log(
+            "Could not register " . $property->getName()
             . " because it has property_id=0"
           );
         }
