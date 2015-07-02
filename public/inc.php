@@ -64,7 +64,17 @@ class Hawk
         //TODO - proper handling of duplicate keys and other sql errors
         try
         {
-          self::dbConn()->insert('websites', $data, true);
+          if($data['ga_property_id'] > 0)
+          {
+            self::dbConn()->insert('websites', $data, true);
+          }
+          else
+          {
+            error_Log(
+              "Could not register " . $data['name']
+              . " because it has property_id=0"
+            );
+          }
         }
         catch(Exception $e)
         {
