@@ -1,0 +1,40 @@
+body{
+      background-color: #fff;
+      color:#000;
+      font-size:40px;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    .container-fluid {
+      min-height: 100%;
+      height: auto !important; /* This line and the next line are not necessary unless you need IE6 support */
+      height: 100%;
+      margin: 0 auto -30px; /* the bottom margin is the negative value of the footer's height */
+    }
+    .footer, .push {
+      font-size:12px;
+      height: 30px; /* .push must be the same height as .footer */
+    }
+
+    .infobar
+    {
+      background-color:#000;
+      padding:5px;
+      font-size:12px;
+      color:#fff;
+      text-align:right;
+    }
+
+    h2 {
+      font-size: 26px;
+    }
+    .stats-heading {
+line-height: 30px;
+margin-bottom:40px;
+    }
+    .stats-details {
+font-size:20px;
+    }
