@@ -11,41 +11,41 @@
 </head>
 <body>
 <div class="infobar">
-<?php if(isset($statsRows)): ?>
-<div class="pull-left"><a href="configure.php">Configure</a></div>
-<?php endif; ?>
-<div class="pull-right"><?= date('d M Y H:i A') ?></div>
+  <?php if(isset($statsRows)): ?>
+    <div class="pull-left"><a href="configure.php">Configure</a></div>
+  <?php endif; ?>
+  <div class="pull-right"><?= date('d M Y H:i A') ?></div>
   <div class="clearfix"></div>
 </div>
 <div class="container-fluid">
   <?php if(isset($statsRows)): ?>
-  <div class="row">
+    <div class="row">
       <?php foreach($statsRows as $stats): ?>
-      <div class="col-lg-3 col-xl-2 col-md-3" style="border:1px solid #ddd;">
-        <?php if($stats != null): $metrics = current($stats); ?>
-          <h2 class="text-primary"><?= key($stats) ?></h2>
-          <hr>
+        <div class="<?= $colStyles; ?> stats-panel" style="border:1px solid #ddd;">
+          <?php if($stats != null): $metrics = current($stats); ?>
+            <h2 class="text-primary"><?= key($stats) ?></h2>
+            <hr>
 
-          <p class="stats-heading"><?= number_format($metrics['ga:sessions'], 0, '.', ','); ?>
-            <br/><span class="stats-details"><?= Hawk::metricsName('ga:sessions') ?></span>
-          </p>
+            <p class="stats-heading"><?= number_format($metrics['ga:sessions'], 0, '.', ','); ?>
+              <br/><span class="stats-details"><?= Hawk::metricsName('ga:sessions') ?></span>
+            </p>
 
-          <p class="stats-heading"><?= number_format($metrics['ga:pageviews'], 0, '.', ','); ?>
-            <br/><span class="stats-details"><?= Hawk::metricsName('ga:pageviews') ?></span>
-          </p>
+            <p class="stats-heading"><?= number_format($metrics['ga:pageviews'], 0, '.', ','); ?>
+              <br/><span class="stats-details"><?= Hawk::metricsName('ga:pageviews') ?></span>
+            </p>
 
-          <p class="stats-heading"><?= number_format($metrics['ga:bounceRate'],2 ); ?>%
-            <br/><span class="stats-details"><?= Hawk::metricsName('ga:bounceRate') ?></span>
-          </p>
+            <p class="stats-heading"><?= number_format($metrics['ga:bounceRate'],2 ); ?>%
+              <br/><span class="stats-details"><?= Hawk::metricsName('ga:bounceRate') ?></span>
+            </p>
 
-          <p class="stats-heading"><?= number_format($metrics['ga:avgPageLoadTime'], 2); ?>s
-            <br/><span class="stats-details"><?= Hawk::metricsName('ga:avgPageLoadTime') ?></span>
-          </p>
+            <p class="stats-heading"><?= number_format($metrics['ga:avgPageLoadTime'], 2); ?>s
+              <br/><span class="stats-details"><?= Hawk::metricsName('ga:avgPageLoadTime') ?></span>
+            </p>
 
-        <?php endif ?>
-      </div>
+          <?php endif ?>
+        </div>
       <?php endforeach; ?>
-  </div>
+    </div>
   <?php endif; ?>
 
   <?php if(isset($authUrl)): ?>
@@ -62,9 +62,9 @@
       <p class="text-muted" style="font-size:20px;">Google Analytics Dashboard</p>
       <p style="font-size:14px;">I encountered some errors while trying to connect to your analytics account</p>
       <ul style="font-size:12px; color:red;">
-      <?php foreach($errors as $error): ?>
-       <li><?= $error ?></li>
-      <?php endforeach; ?>
+        <?php foreach($errors as $error): ?>
+          <li><?= $error ?></li>
+        <?php endforeach; ?>
       </ul>
     </div>
   <?php endif; ?>

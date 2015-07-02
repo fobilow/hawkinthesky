@@ -92,7 +92,7 @@ if($client->getAccessToken() && !$client->isAccessTokenExpired())
      * @var Google_Service_Analytics_GaData $data
      */
     $metrics = 'ga:sessions,ga:pageviews,ga:uniquePageviews,'
-      . 'ga:users,ga:newUsers,ga:avgPageLoadTime,ga:bounceRate';
+               . 'ga:users,ga:newUsers,ga:avgPageLoadTime,ga:bounceRate';
 
     try
     {
@@ -113,7 +113,24 @@ if($client->getAccessToken() && !$client->isAccessTokenExpired())
   //complete the grid
   if($stats)
   {
-    $cols = 4;
+    // set col styles
+    $cols = Hawk::$config['display']['cols'];
+
+    switch($cols) {
+      case 3:
+        $colStyles = 'col-sm-4';
+        break;
+      case 4:
+        $colStyles = 'col-sm-3';
+        break;
+      case 6:
+        $colStyles = 'col-sm-2';
+        break;
+      default:
+        $colStyles = 'col-sm-3';
+        break;
+    }
+
     $mod  = count($stats) % $cols;
     if($mod != 0)
     {

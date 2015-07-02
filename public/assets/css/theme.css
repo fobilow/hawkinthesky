@@ -31,6 +31,10 @@ h2 {
   font-size: 26px;
 }
 
+.stats-panel {
+  min-height: 520px;
+}
+
 .stats-heading {
   font-size: 40px;
   line-height:   30px;
