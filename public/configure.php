@@ -2,6 +2,14 @@
 include_once '../vendor/autoload.php';
 include_once 'inc.php';
 include_once 'logic.php';
+
+session_start();
+if(!isset($_SESSION['access_token']))
+{
+  header('Location: /');
+  die;
+}
+
 ?>
 
 <!DOCTYPE html>
