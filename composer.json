@@ -1,0 +1,15 @@
+{
+  "name":        "Hawk In The Sky",
+  "type":        "App",
+  "description": "Google Analytics Dashboard",
+  "keywords":    [
+    "google"
+  ],
+  "homepage":    "http://fobilow.co.uk/p/hawkintheksky",
+  "license":     "Apache-2.0",
+  "require":     {
+    "php":              ">=5.2.1",
+    "simplon/mysql":    "0.6.0",
+    "google/apiclient": "1.1.4"
+  }
+}
