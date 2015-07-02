@@ -4,7 +4,7 @@ include_once '../vendor/autoload.php';
 include_once 'inc.php';
 session_start();
 
-$errors = [];
+$errors        = [];
 $client_id     = Hawk::$config['ga']['client_id'];
 $client_secret = Hawk::$config['ga']['client_secret'];
 $redirect_uri  = Hawk::$config['ga']['redirect_uri'];
@@ -15,15 +15,7 @@ $client->setClientSecret($client_secret);
 $client->setRedirectUri($redirect_uri);
 $client->addScope(Google_Service_Analytics::ANALYTICS_READONLY);
 
-
 $service = new Google_Service_Analytics($client);
-
-
-if(isset($_REQUEST['logout']))
-{
-  unset($_SESSION['access_token']);
-}
-
 /************************************************
  * If we have a code back from the OAuth 2.0 flow,
  * we need to exchange that with the authenticate()
@@ -33,8 +25,9 @@ if(isset($_REQUEST['logout']))
 if(isset($_GET['code']))
 {
   $client->authenticate($_GET['code']);
-  $_SESSION['access_token'] = $client->getAccessToken();
-  $redirect                 = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
+  $_SESSION['access_token']  = $client->getAccessToken();
+  $_SESSION['refresh_token'] = $client->getRefreshToken();
+  $redirect                  = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
   header('Location: ' . filter_var($redirect, FILTER_SANITIZE_URL));
 }
 
@@ -54,19 +47,20 @@ else
 if($client->isAccessTokenExpired())
 {
   unset($_SESSION['access_token']);
+  if(isset($_SESSION['refresh_token']))
+  {
+    $client->refreshToken($_SESSION['refresh_token']);
+    $_SESSION['refresh_token'] = $client->getRefreshToken();
+  }
 }
 
-if($client->getAccessToken())
+if($client->getAccessToken() && !$client->isAccessTokenExpired())
 {
   $_SESSION['access_token'] = $client->getAccessToken();
-  $properties = Hawk::getProperties();
-  if(!$properties)
-  {
-    $properties = Hawk::registerProperties($service);
-  }
+  $properties               = Hawk::registerProperties($service);
 
   $dataGa = $service->data_ga;
-  $stats = [];
+  $stats  = [];
   foreach($properties as $property)
   {
     /**
@@ -95,7 +89,7 @@ if($client->getAccessToken())
   if($stats)
   {
     $cols = 4;
-    $mod   = count($stats) % $cols;
+    $mod  = count($stats) % $cols;
     if($mod != 0)
     {
       $rem = $cols - $mod;
@@ -107,7 +101,6 @@ if($client->getAccessToken())
 
     $statsRows = array_chunk($stats, $cols);
   }
-
 }
 include_once 'dashboard.php';
 
