@@ -3,6 +3,8 @@
 include_once '../vendor/autoload.php';
 include_once 'inc.php';
 session_start();
+
+$errors = [];
 $client_id     = Hawk::$config['ga']['client_id'];
 $client_secret = Hawk::$config['ga']['client_secret'];
 $redirect_uri  = Hawk::$config['ga']['redirect_uri'];
@@ -64,6 +66,7 @@ if($client->getAccessToken())
   }
 
   $dataGa = $service->data_ga;
+  $stats = [];
   foreach($properties as $property)
   {
     /**
@@ -71,28 +74,40 @@ if($client->getAccessToken())
      */
     $metrics = 'ga:sessions,ga:pageviews,ga:uniquePageviews,'
       . 'ga:users,ga:newUsers,ga:avgPageLoadTime,ga:bounceRate';
-    $data    = $dataGa->get(
-      'ga:' . $property['ga_property_id'],
-      'today',
-      'today',
-      $metrics
-    );
-    $stats[] = [$property['name'] => $data->getTotalsForAllResults()];
-  }
 
-  //complete the grid
-  $cols = 4;
-  $mod   = count($stats) % $cols;
-  if($mod != 0)
-  {
-    $rem = $cols - $mod;
-    for($i = 0; $i < $rem; $i++)
+    try
     {
-      $stats[] = null;
+      $data    = $dataGa->get(
+        'ga:' . $property['ga_property_id'],
+        'today',
+        'today',
+        $metrics
+      );
+      $stats[] = [$property['name'] => $data->getTotalsForAllResults()];
+    }
+    catch(Exception $e)
+    {
+      $errors[] = $e->getMessage();
     }
   }
 
-  $statsRows = array_chunk($stats, $cols);
+  //complete the grid
+  if($stats)
+  {
+    $cols = 4;
+    $mod   = count($stats) % $cols;
+    if($mod != 0)
+    {
+      $rem = $cols - $mod;
+      for($i = 0; $i < $rem; $i++)
+      {
+        $stats[] = null;
+      }
+    }
+
+    $statsRows = array_chunk($stats, $cols);
+  }
+
 }
 include_once 'dashboard.php';
 
