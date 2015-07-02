@@ -19,10 +19,9 @@
 </div>
 <div class="container-fluid">
   <?php if(isset($statsRows)): ?>
-  <?php foreach($statsRows as $row): ?>
   <div class="row">
-      <?php foreach($row as $stats): ?>
-      <div class="col-lg-3 col-md-3" style="border:1px solid #ddd;">
+      <?php foreach($statsRows as $stats): ?>
+      <div class="col-lg-3 col-xl-2 col-md-3" style="border:1px solid #ddd;">
         <?php if($stats != null): $metrics = current($stats); ?>
           <h2 class="text-primary"><?= key($stats) ?></h2>
           <hr>
@@ -47,7 +46,6 @@
       </div>
       <?php endforeach; ?>
   </div>
-  <?php endforeach; ?>
   <?php endif; ?>
 
   <?php if(isset($authUrl)): ?>

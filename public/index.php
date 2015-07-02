@@ -124,7 +124,7 @@ if($client->getAccessToken() && !$client->isAccessTokenExpired())
       }
     }
 
-    $statsRows = array_chunk($stats, $cols);
+    $statsRows = $stats;
   }
 }
 include_once 'dashboard.php';
