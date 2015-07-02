@@ -1,7 +1,7 @@
 body {
   background-color: #fff;
   color:            #000;
-  font-size:        40px;
+  font-size:        14px;
 }
 
 html, body {
@@ -25,7 +25,6 @@ html, body {
   padding:          5px;
   font-size:        12px;
   color:            #fff;
-  text-align:       right;
 }
 
 h2 {
@@ -33,6 +32,7 @@ h2 {
 }
 
 .stats-heading {
+  font-size: 40px;
   line-height:   30px;
   margin-bottom: 40px;
 }

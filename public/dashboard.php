@@ -10,7 +10,11 @@
   <link rel="stylesheet" href="/assets/css/theme.css"/>
 </head>
 <body>
-<div class="infobar"><?= date('d M Y H:i A') ?></div>
+<div class="infobar">
+<div class="pull-left"><a href="configure.php">Configure</a></div>
+<div class="pull-right"><?= date('d M Y H:i A') ?></div>
+  <div class="clearfix"></div>
+</div>
 <div class="container-fluid">
   <?php if(isset($statsRows)): ?>
   <?php foreach($statsRows as $row): ?>
@@ -20,12 +24,12 @@
         <?php if($stats != null): $metrics = current($stats); ?>
           <h2 class="text-primary"><?= key($stats) ?></h2>
           <hr>
-          
-          <p class="stats-heading"><?= $metrics['ga:sessions']; ?>
+
+          <p class="stats-heading"><?= number_format($metrics['ga:sessions'], 0, '.', ','); ?>
             <br/><span class="stats-details"><?= Hawk::metricsName('ga:sessions') ?></span>
           </p>
 
-          <p class="stats-heading"><?= $metrics['ga:pageviews']; ?>
+          <p class="stats-heading"><?= number_format($metrics['ga:pageviews'], 0, '.', ','); ?>
             <br/><span class="stats-details"><?= Hawk::metricsName('ga:pageviews') ?></span>
           </p>
 

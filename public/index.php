@@ -4,6 +4,31 @@ include_once '../vendor/autoload.php';
 include_once 'inc.php';
 session_start();
 
+if(isset($_GET['view']))
+{
+  switch($_GET['view'])
+  {
+    case 'month':
+      $start = date('Y-m-01');
+      $end = date('Y-m-t');
+      break;
+    case 'week':
+      $start = date('Y-m-d', strtotime('-7 days'));
+      $end = date('Y-m-d');
+      break;
+    case 'day':
+    default:
+      $start = date('Y-m-d');
+      $end = date('Y-m-d');
+      break;
+  }
+}
+else
+{
+  $start = date('Y-m-d');
+  $end = date('Y-m-d');
+}
+
 $errors        = [];
 $client_id     = Hawk::$config['ga']['client_id'];
 $client_secret = Hawk::$config['ga']['client_secret'];
@@ -73,8 +98,8 @@ if($client->getAccessToken() && !$client->isAccessTokenExpired())
     {
       $data    = $dataGa->get(
         'ga:' . $property['ga_property_id'],
-        'today',
-        'today',
+        $start,
+        $end,
         $metrics
       );
       $stats[] = [$property['name'] => $data->getTotalsForAllResults()];
