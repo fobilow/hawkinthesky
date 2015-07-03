@@ -55,10 +55,30 @@ class Hawk
        */
       foreach($properties as $property)
       {
-        if($property->getDefaultProfileId() > 0)
+        $propertyId = $property->getDefaultProfileId();
+        if($propertyId <= 0)
+        {
+          $items = $service->management_profiles->listManagementProfiles(
+            $data['ga_account_id'],
+            '~all'
+          )->getItems();
+
+          //Grab the property of the first profile if we have it.
+          //For now that is all we care about. Maybe in the future we can handle
+          //multiple profile more cleverly
+          if(isset($items[0]))
+          {
+            /**
+             * @var Google_Service_Analytics_Profile $item
+             */
+            $item       = $items[0];
+            $propertyId = $item->getId();
+          }
+        }
+        if($propertyId > 0)
         {
           $data['name']           = $property->getName();
-          $data['ga_property_id'] = $property->getDefaultProfileId();
+          $data['ga_property_id'] = $propertyId;
           $data['url']            = $property->getWebsiteUrl();
           $data['time']           = time();
 
