@@ -1,7 +1,12 @@
 Hawk In The Sky
 =======
-Hawk In The Sky is a simple dashboard system that connects to you google analytics account and displays all
-your website in a nice dashboard for display on large screens.
+Hawk In The Sky is a simple dashboard system that connects to your google analytics account and displays all
+your websites in a nice dashboard for display on large screens. It features metrics like:
+
+- Sessions
+- Page Views
+- Bounce Rate
+- Average Page Load Time
 
 ### Installation
 - Clone down the repo
