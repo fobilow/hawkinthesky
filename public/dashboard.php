@@ -12,7 +12,7 @@
 <body>
 <div class="infobar">
   <?php if(isset($statsRows)): ?>
-    <div class="pull-left"><a href="configure.php">Configure</a></div>
+    <div class="pull-left"><a href="/configure.php">Configure</a></div>
   <?php endif; ?>
   <div class="pull-right"><?= date('d M Y H:i A') ?></div>
   <div class="clearfix"></div>

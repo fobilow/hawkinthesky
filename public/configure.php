@@ -4,7 +4,7 @@ include_once 'inc.php';
 include_once 'logic.php';
 
 session_start();
-if(!isset($_SESSION['access_token']))
+if(!isset($_SESSION['access_token']) && !isset($_SESSION['user']))
 {
   header('Location: /');
   die;
@@ -36,7 +36,7 @@ if(!isset($_SESSION['access_token']))
         <th>Logo</th>
         <th>Status</th>
       </tr>
-    <?php foreach(Hawk::getProperties(true) as $property): ?>
+    <?php foreach(Hawk::getProperties($_SESSION['user'], true) as $property): ?>
       <tr>
         <td width="20%">
           <strong><?= $property['name'] ?></strong>

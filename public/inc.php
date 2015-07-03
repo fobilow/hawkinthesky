@@ -35,14 +35,15 @@ class Hawk
 
   public static function registerProperties(Google_Service_Analytics $service)
   {
-    $accounts = $service->management_accounts
-      ->listManagementAccounts()->getItems();
+    $accountList = $service->management_accounts->listManagementAccounts();
+    $accounts    = $accountList->getItems();
     /**
      * @var Google_Service_Analytics_Account $account
      */
     $webProperties = $service->management_webproperties;
     $return        = [];
     $data          = [];
+    $data['owner'] = $accountList->getUsername();
     foreach($accounts as $account)
     {
       $data['ga_account_id'] = $account->getId();
@@ -86,10 +87,31 @@ class Hawk
     return $return;
   }
 
-  public static function getProperties($includeDisabled = false)
+  /**
+   * Returns an array of properties keyed by the property id
+   *
+   * @param string     $owner
+   * @param bool|false $includeDisabled
+   *
+   * @return array
+   */
+  public static function getProperties($owner, $includeDisabled = false)
   {
-    $append = ($includeDisabled) ? '' : ' WHERE disabled = 0';
-    return self::dbConn()->fetchRowMany("SELECT * FROM websites" . $append);
+    $append = ($includeDisabled) ? '' : ' AND disabled = 0';
+    $result = self::dbConn()->fetchRowMany(
+      sprintf(
+        "SELECT * FROM websites WHERE owner='%s'" . $append,
+        $owner
+      )
+    );
+
+    $properties = [];
+    foreach($result as $row)
+    {
+      $properties[$row['ga_property_id']] = $row;
+    }
+
+    return $properties;
   }
 
   public static function metricsName($name)
