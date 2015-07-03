@@ -7,7 +7,7 @@
         content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta http-equiv="refresh" content="60">
   <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="/assets/css/theme.css"/>
+  <link rel="stylesheet" href="/assets/css/<?= $theme; ?>.css"/>
 </head>
 <body>
 <div class="infobar">

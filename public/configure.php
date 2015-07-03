@@ -10,6 +10,14 @@ if(!isset($_SESSION['access_token']) && !isset($_SESSION['user']))
   die;
 }
 
+// configure theme.
+$configThemes = Hawk::$config['display']['themes'];
+foreach($configThemes as $themeName => $themeSet) {
+  if($themeSet) {
+    $theme = $themeName;
+  }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +28,7 @@ if(!isset($_SESSION['access_token']) && !isset($_SESSION['user']))
   <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1">
   <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="/assets/css/theme.css"/>
+  <link rel="stylesheet" href="/assets/css/<?= $theme; ?>.css"/>
 </head>
 <body>
 <div class="infobar">

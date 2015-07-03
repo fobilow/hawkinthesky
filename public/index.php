@@ -159,6 +159,15 @@ if($client->getAccessToken() && !$client->isAccessTokenExpired())
     $statsRows = $stats;
   }
 }
+
+// configure theme.
+$configThemes = Hawk::$config['display']['themes'];
+foreach($configThemes as $themeName => $themeSet) {
+  if($themeSet) {
+    $theme = $themeName;
+  }
+}
+
 include_once 'dashboard.php';
 
 

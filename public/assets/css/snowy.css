@@ -1,0 +1,63 @@
+/**
+ * @author luke.rodham
+ * @site https://www.snowyapp.com
+ */
+body {
+  background-color: #fff;
+  color:            #000;
+  font-size:        14px;
+}
+
+html, body {
+  height: 100%;
+}
+
+.container-fluid {
+  min-height: 100%;
+  height:     auto !important; /* This line and the next line are not necessary unless you need IE6 support */
+  height:     100%;
+  margin:     0 auto -30px; /* the bottom margin is the negative value of the footer's height */
+}
+
+.footer, .push {
+  font-size: 12px;
+  height:    30px; /* .push must be the same height as .footer */
+}
+
+.infobar {
+  background-color: #48A6B6;
+  padding:          10px;
+  font-size:        14px;
+  color:            #fff;
+}
+
+.infobar a {
+  color: #fff;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.text-primary {
+  color: #48A6B6;
+}
+
+.stats-panel {
+  min-height: 520px;
+}
+
+.stats-details, .stats-heading {
+  color: #3C3C3C;
+}
+
+.stats-heading {
+  font-size: 40px;
+  line-height:   30px;
+  margin-bottom: 40px;
+}
+
+.stats-details {
+  font-size: 18px;
+}
