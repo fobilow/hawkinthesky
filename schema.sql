@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               5.1.50-community - MySQL Community Server (GPL)
--- Server OS:                    Win32
+-- Host:                         naijalol.com
+-- Server version:               5.1.73 - Source distribution
+-- Server OS:                    redhat-linux-gnu
 -- HeidiSQL Version:             9.2.0.4947
 -- --------------------------------------------------------
 
@@ -18,13 +18,14 @@ USE `hawkinthesky`;
 -- Dumping structure for table hawkinthesky.websites
 CREATE TABLE IF NOT EXISTS `websites` (
   `ga_property_id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `owner` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `url` varchar(250) NOT NULL,
   `logo` varchar(250) DEFAULT NULL,
   `ga_account_id` int(11) NOT NULL,
   `disabled` int(11) NOT NULL DEFAULT '0',
   `time` int(11) NOT NULL,
-  KEY `ga_property_id` (`ga_property_id`)
+  PRIMARY KEY (`ga_property_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
