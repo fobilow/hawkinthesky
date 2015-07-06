@@ -38,6 +38,7 @@ $client = new Google_Client();
 $client->setClientId($client_id);
 $client->setClientSecret($client_secret);
 $client->setRedirectUri($redirect_uri);
+$client->setAccessType('offline');
 $client->addScope(Google_Service_Analytics::ANALYTICS_READONLY);
 
 $service = new Google_Service_Analytics($client);
