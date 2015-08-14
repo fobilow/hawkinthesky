@@ -143,7 +143,8 @@ class Hawk
       'ga:users'           => 'Users',
       'ga:newUsers'        => 'New Users',
       'ga:avgPageLoadTime' => 'Avg. Page Load Time',
-      'ga:bounceRate'      => 'Bounce Rate'
+      'ga:bounceRate'      => 'Bounce Rate',
+      'rt:activeUsers'     => 'Real Time Users'
     ];
 
     return isset($lookup[$name]) ? $lookup[$name] : '--';

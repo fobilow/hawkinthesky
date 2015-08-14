@@ -90,6 +90,8 @@ if($client->getAccessToken() && !$client->isAccessTokenExpired())
   $storedProperties = Hawk::getProperties($_SESSION['user'], true);
 
   $dataGa = $service->data_ga;
+  $realTimeData = $service->data_realtime;
+
   $stats  = [];
   foreach($properties as $property)
   {
@@ -112,7 +114,17 @@ if($client->getAccessToken() && !$client->isAccessTokenExpired())
           $end,
           $metrics
         );
-        $stats[] = [$property['name'] => $data->getTotalsForAllResults()];
+
+        $results = $data->getTotalsForAllResults();
+
+        //get real time stats
+        $rData = $realTimeData->get(
+          'ga:' . $property['ga_property_id'],
+          'rt:activeUsers'
+        );
+
+        $results = array_merge($results, $rData->getTotalsForAllResults());
+        $stats[] = [$property['name'] => $results];
       }
       catch(Exception $e)
       {

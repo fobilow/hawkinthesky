@@ -23,9 +23,13 @@
       <?php foreach($statsRows as $stats): ?>
         <div class="<?= $colStyles; ?> stats-panel" style="border:1px solid #ddd;">
           <?php if($stats != null): $metrics = current($stats); ?>
+          <div style="float:right; margin-top:30px;">
+            <div style="background-color:#419949; position absolute; top:10px; right: 0; padding:20px;">
+              <span style="font-size:26px; color:#fff;"><?= number_format($metrics['rt:activeUsers'], 0, '.', ','); ?></span>
+            </div>
+          </div>
             <h2 class="text-primary"><?= key($stats) ?></h2>
             <hr>
-
             <p class="stats-heading"><?= number_format($metrics['ga:sessions'], 0, '.', ','); ?>
               <br/><span class="stats-details"><?= Hawk::metricsName('ga:sessions') ?></span>
             </p>
