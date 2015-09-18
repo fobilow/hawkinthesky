@@ -70,9 +70,6 @@
 
                     </div>
                   </li>
-                <li>
-                  <div class="screen3"><p style="font-size:35px;">Screen 3</p></div>
-                </li>
               </ul>
             </div>
           <?php endif ?>
