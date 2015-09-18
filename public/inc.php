@@ -149,6 +149,32 @@ class Hawk
 
     return isset($lookup[$name]) ? $lookup[$name] : '--';
   }
+
+  public static function formatStats($results)
+  {
+    $results['ga:sessions']        = number_format(
+      $results['ga:sessions'],
+      0,
+      '.',
+      ','
+    );
+    $results['ga:pageviews']       = number_format(
+      $results['ga:pageviews'],
+      0,
+      '.',
+      ','
+    );
+    $results['ga:bounceRate']      = number_format(
+        $results['ga:bounceRate'],
+        2
+      ) . '%';
+    $results['ga:avgPageLoadTime'] = number_format(
+        $results['ga:avgPageLoadTime'],
+        2
+      ) . 's';
+
+    return $results;
+  }
 }
 
 Hawk::init();

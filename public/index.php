@@ -4,31 +4,7 @@ include_once '../vendor/autoload.php';
 include_once 'inc.php';
 session_start();
 
-if(isset($_GET['view']))
-{
-  switch($_GET['view'])
-  {
-    case 'month':
-      $start = date('Y-m-01');
-      $end   = date('Y-m-t');
-      break;
-    case 'week':
-      $start = date('Y-m-d', strtotime('-7 days'));
-      $end   = date('Y-m-d');
-      break;
-    case 'day':
-    default:
-      $start = date('Y-m-d');
-      $end   = date('Y-m-d');
-      break;
-  }
-}
-else
-{
-  $start = date('Y-m-d');
-  $end   = date('Y-m-d');
-}
-
+$view = isset($_GET['view'])? $_GET['view'] : '';
 $errors        = [];
 $client_id     = Hawk::$config['ga']['client_id'];
 $client_secret = Hawk::$config['ga']['client_secret'];
@@ -39,6 +15,7 @@ $client->setClientId($client_id);
 $client->setClientSecret($client_secret);
 $client->setRedirectUri($redirect_uri);
 $client->setAccessType('offline');
+$client->setApprovalPrompt('force');
 $client->addScope(Google_Service_Analytics::ANALYTICS_READONLY);
 
 $service = new Google_Service_Analytics($client);
@@ -82,55 +59,34 @@ if($client->isAccessTokenExpired())
 
 if($client->getAccessToken() && !$client->isAccessTokenExpired())
 {
+  $stats = [];
   $_SESSION['access_token'] = $client->getAccessToken();
-  $properties               = Hawk::registerProperties($service);
-
-  $_SESSION['user'] = $properties[0]['owner'];
-
-  $storedProperties = Hawk::getProperties($_SESSION['user'], true);
-
-  $dataGa = $service->data_ga;
-  $realTimeData = $service->data_realtime;
-
-  $stats  = [];
-  foreach($properties as $property)
+  try
   {
-    //skip properties that have been disabled
-    if(isset($storedProperties[$property['ga_property_id']])
-      && $storedProperties[$property['ga_property_id']]['disabled'] == 0
-    )
+    $properties = Hawk::registerProperties($service);
+    $_SESSION['user'] = $properties[0]['owner'];
+    $storedProperties = Hawk::getProperties($_SESSION['user'], true);
+
+    $dataGa       = $service->data_ga;
+    $realTimeData = $service->data_realtime;
+
+
+    foreach($properties as $property)
     {
-      /**
-       * @var Google_Service_Analytics_GaData $data
-       */
-      $metrics = 'ga:sessions,ga:pageviews,ga:uniquePageviews,'
-        . 'ga:users,ga:newUsers,ga:avgPageLoadTime,ga:bounceRate';
-
-      try
+      //skip properties that have been disabled
+      if(isset($storedProperties[$property['ga_property_id']])
+        && $storedProperties[$property['ga_property_id']]['disabled'] == 0
+      )
       {
-        $data    = $dataGa->get(
-          'ga:' . $property['ga_property_id'],
-          $start,
-          $end,
-          $metrics
-        );
-
-        $results = $data->getTotalsForAllResults();
-
-        //get real time stats
-        $rData = $realTimeData->get(
-          'ga:' . $property['ga_property_id'],
-          'rt:activeUsers'
-        );
-
-        $results = array_merge($results, $rData->getTotalsForAllResults());
-        $stats[] = [$property['name'] => $results];
-      }
-      catch(Exception $e)
-      {
-        $errors[] = $e->getMessage();
+        $results['siteName'] = $property['name'];
+        $results['divClass'] = "site_" . substr(md5($property['name']), 0, 8);
+        $stats[]             = [$property['name'] => $results];
       }
     }
+  }
+  catch(Exception $e)
+  {
+    $errors[] = $e->getMessage();
   }
 
   //complete the grid
@@ -175,8 +131,10 @@ if($client->getAccessToken() && !$client->isAccessTokenExpired())
 
 // configure theme.
 $configThemes = Hawk::$config['display']['themes'];
-foreach($configThemes as $themeName => $themeSet) {
-  if($themeSet) {
+foreach($configThemes as $themeName => $themeSet)
+{
+  if($themeSet)
+  {
     $theme = $themeName;
   }
 }

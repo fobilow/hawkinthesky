@@ -5,9 +5,9 @@
   <meta name="description" content="HawkInTheSky - Google Analytics Dashboard">
   <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta http-equiv="refresh" content="60">
-  <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="/assets/css/<?= $theme; ?>.css"/>
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="assets/css/jquery.bxslider.css"/>
+  <link rel="stylesheet" href="assets/css/<?= $theme; ?>.css"/>
 </head>
 <body>
 <div class="infobar">
@@ -21,31 +21,60 @@
   <?php if(isset($statsRows)): ?>
     <div class="row">
       <?php foreach($statsRows as $stats): ?>
-        <div class="<?= $colStyles; ?> stats-panel" style="border:1px solid #ddd;">
+        <div class="<?= $colStyles; ?> stats-panel ">
           <?php if($stats != null): $metrics = current($stats); ?>
-          <div style="float:right; margin-top:30px;">
-            <div style="background-color:#419949; position absolute; top:10px; right: 0; padding:20px;">
-              <span style="font-size:26px; color:#fff;"><?= number_format($metrics['rt:activeUsers'], 0, '.', ','); ?></span>
-            </div>
-          </div>
+            <div class="<?= $metrics['divClass']; ?>">
             <h2 class="text-primary"><?= key($stats) ?></h2>
-            <hr>
-            <p class="stats-heading"><?= number_format($metrics['ga:sessions'], 0, '.', ','); ?>
-              <br/><span class="stats-details"><?= Hawk::metricsName('ga:sessions') ?></span>
-            </p>
+              <ul class="bxslider">
+                  <li>
+                   <div class="screen1" style="padding:10px;">
+                    <p class="stats-heading">
+                      <span class="stats-sessions">--</span>
+                      <br/><span class="stats-details"><?= Hawk::metricsName('ga:sessions') ?></span>
+                    </p>
 
-            <p class="stats-heading"><?= number_format($metrics['ga:pageviews'], 0, '.', ','); ?>
-              <br/><span class="stats-details"><?= Hawk::metricsName('ga:pageviews') ?></span>
-            </p>
+                    <p class="stats-heading">
+                      <span class="stats-pageviews">--</span>
+                      <br/><span class="stats-details"><?= Hawk::metricsName('ga:pageviews') ?></span>
+                    </p>
 
-            <p class="stats-heading"><?= number_format($metrics['ga:bounceRate'],2 ); ?>%
-              <br/><span class="stats-details"><?= Hawk::metricsName('ga:bounceRate') ?></span>
-            </p>
+                    <p class="stats-heading">
+                      <span class="stats-bouncerate">--</span>
+                      <br/><span class="stats-details"><?= Hawk::metricsName('ga:bounceRate') ?></span>
+                    </p>
 
-            <p class="stats-heading"><?= number_format($metrics['ga:avgPageLoadTime'], 2); ?>s
-              <br/><span class="stats-details"><?= Hawk::metricsName('ga:avgPageLoadTime') ?></span>
-            </p>
+                    <p class="stats-heading">
+                      <span class="stats-avgpageloadtime">--</span>
+                      <br/><span class="stats-details"><?= Hawk::metricsName('ga:avgPageLoadTime') ?></span>
+                    </p>
+                   </div>
+                  </li>
+                  <li>
+                    <div class="screen2" style="padding:10px;">
+                      <p class="stats-heading">
+                        <span class="stats-activeusers">--</span>
+                        <br/><span class="stats-details"><?= Hawk::metricsName('rt:activeUsers') ?></span>
+                      </p>
+                      <p class="stats-heading">
+                        <span class="stats-uniquepageviews">--</span>
+                        <br/><span class="stats-details"><?= Hawk::metricsName('ga:uniquePageviews') ?></span>
+                      </p>
+                      <p class="stats-heading">
+                        <span class="stats-users">--</span>
+                        <br/><span class="stats-details"><?= Hawk::metricsName('ga:users') ?></span>
+                      </p>
+                      <p class="stats-heading">
+                        <span class="stats-newusers">--</span>
+                        <br/><span class="stats-details"><?= Hawk::metricsName('ga:newUsers') ?></span>
+                      </p>
 
+                    </div>
+                  </li>
+                <li>
+                  <div class="screen3"><p style="font-size:35px;">Screen 3</p></div>
+                </li>
+              </ul>
+            </div>
           <?php endif ?>
         </div>
       <?php endforeach; ?>
@@ -79,3 +108,32 @@
 <div class="footer text-center">
   &copy; Hawk In The Sky
 </div>
+<script src="assets/js/jquery-2.1.4.min.js"></script>
+<script src="assets/js/jquery.bxslider.js"></script>
+<script>
+  function getStats()
+  {
+    $.get('/get-stats.php?view=<?= $view ?>', function(data){
+      $.each(data, function(key, stats){
+
+        $('.'+stats.divClass).fadeIn("slow", function(){
+          $('.'+stats.divClass+' .stats-sessions').text(stats['ga:sessions']);
+          $('.'+stats.divClass+' .stats-pageviews').text(stats['ga:pageviews']);
+          $('.'+stats.divClass+' .stats-bouncerate').text(stats['ga:bounceRate']);
+          $('.'+stats.divClass+' .stats-avgpageloadtime').text(stats['ga:avgPageLoadTime']);
+          $('.'+stats.divClass+' .stats-activeusers').text(stats['rt:activeUsers']);
+          $('.'+stats.divClass+' .stats-uniquepageviews').text(stats['ga:uniquePageviews']);
+          $('.'+stats.divClass+' .stats-users').text(stats['ga:users']);
+          $('.'+stats.divClass+' .stats-newusers').text(stats['ga:newUsers']);
+        });
+      });
+    });
+  }
+
+  getStats();
+  setInterval(getStats, 60000);
+
+  $(document).ready(function(){
+    $('.bxslider').bxSlider({controls: false, auto: true, pause: 10000});
+  });
+</script>

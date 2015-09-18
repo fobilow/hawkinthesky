@@ -33,6 +33,7 @@ h2 {
 
 .stats-panel {
   min-height: 520px;
+  border:1px solid #ddd;
 }
 
 .stats-heading {
