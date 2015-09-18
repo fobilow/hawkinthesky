@@ -24,74 +24,79 @@ switch($_GET['view'])
 
 $errors        = [];
 $stats         = [];
-$client_id     = Hawk::$config['ga']['client_id'];
-$client_secret = Hawk::$config['ga']['client_secret'];
-$redirect_uri  = Hawk::$config['ga']['redirect_uri'];
-
-$client = new Google_Client();
-$client->setClientId($client_id);
-$client->setClientSecret($client_secret);
-$client->setRedirectUri($redirect_uri);
-$client->setAccessType('offline');
-$client->setApprovalPrompt('force');
-$client->addScope(Google_Service_Analytics::ANALYTICS_READONLY);
-
-$service = new Google_Service_Analytics($client);
-if(isset($_SESSION['access_token']) && $_SESSION['access_token'])
+if(isset($_SESSION['access_token']) && isset($_SESSION['user']))
 {
-  $client->setAccessToken($_SESSION['access_token']);
-}
-if($client->isAccessTokenExpired())
-{
-  unset($_SESSION['access_token']);
-  if(isset($_SESSION['refresh_token']))
+  $client_id     = Hawk::$config['ga']['client_id'];
+  $client_secret = Hawk::$config['ga']['client_secret'];
+  $redirect_uri  = Hawk::$config['ga']['redirect_uri'];
+
+  $client = new Google_Client();
+  $client->setClientId($client_id);
+  $client->setClientSecret($client_secret);
+  $client->setRedirectUri($redirect_uri);
+  $client->setAccessType('offline');
+  $client->setApprovalPrompt('force');
+  $client->addScope(Google_Service_Analytics::ANALYTICS_READONLY);
+
+  $service = new Google_Service_Analytics($client);
+  if(isset($_SESSION['access_token']) && $_SESSION['access_token'])
   {
-    $client->refreshToken($_SESSION['refresh_token']);
-    $_SESSION['refresh_token'] = $client->getRefreshToken();
+    $client->setAccessToken($_SESSION['access_token']);
   }
-}
-
-if($client->getAccessToken() && !$client->isAccessTokenExpired())
-{
-  $_SESSION['access_token'] = $client->getAccessToken();
-  $storedProperties         = Hawk::getProperties($_SESSION['user']);
-
-  $dataGa       = $service->data_ga;
-  $realTimeData = $service->data_realtime;
-
-  foreach($storedProperties as $property)
+  if($client->isAccessTokenExpired())
   {
-    /**
-     * @var Google_Service_Analytics_GaData $data
-     */
-    $metrics = 'ga:sessions,ga:pageviews,ga:uniquePageviews,'
-      . 'ga:users,ga:newUsers,ga:avgPageLoadTime,ga:bounceRate';
-
-    try
+    unset($_SESSION['access_token']);
+    if(isset($_SESSION['refresh_token']))
     {
-      $data = $dataGa->get(
-        'ga:' . $property['ga_property_id'],
-        $start,
-        $end,
-        $metrics
-      );
-
-      $results             = Hawk::formatStats($data->getTotalsForAllResults());
-      $results['siteName'] = $property['name'];
-      $results['divClass'] = "site_" . substr(md5($property['name']), 0, 8);
-
-      //get real time stats
-      $rData = $realTimeData->get(
-        'ga:' . $property['ga_property_id'],
-        'rt:activeUsers'
-      );
-
-      $results = array_merge($results, $rData->getTotalsForAllResults());
-      $stats[] = $results;
+      $client->refreshToken($_SESSION['refresh_token']);
+      $_SESSION['refresh_token'] = $client->getRefreshToken();
     }
-    catch(Exception $e)
+  }
+
+  if($client->getAccessToken() && !$client->isAccessTokenExpired())
+  {
+    $_SESSION['access_token'] = $client->getAccessToken();
+    $storedProperties         = Hawk::getProperties($_SESSION['user']);
+
+    $dataGa       = $service->data_ga;
+    $realTimeData = $service->data_realtime;
+
+    foreach($storedProperties as $property)
     {
-      $errors[] = $e->getMessage();
+      /**
+       * @var Google_Service_Analytics_GaData $data
+       */
+      $metrics = 'ga:sessions,ga:pageviews,ga:uniquePageviews,'
+        . 'ga:users,ga:newUsers,ga:avgPageLoadTime,ga:bounceRate';
+
+      try
+      {
+        $data = $dataGa->get(
+          'ga:' . $property['ga_property_id'],
+          $start,
+          $end,
+          $metrics
+        );
+
+        $results             = Hawk::formatStats(
+          $data->getTotalsForAllResults()
+        );
+        $results['siteName'] = $property['name'];
+        $results['divClass'] = "site_" . substr(md5($property['name']), 0, 8);
+
+        //get real time stats
+        $rData = $realTimeData->get(
+          'ga:' . $property['ga_property_id'],
+          'rt:activeUsers'
+        );
+
+        $results = array_merge($results, $rData->getTotalsForAllResults());
+        $stats[] = $results;
+      }
+      catch(Exception $e)
+      {
+        $errors[] = $e->getMessage();
+      }
     }
   }
 }
