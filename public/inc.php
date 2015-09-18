@@ -167,6 +167,24 @@ class Hawk
       '.',
       ','
     );
+    $results['ga:uniquePageviews']       = number_format(
+      $results['ga:uniquePageviews'],
+      0,
+      '.',
+      ','
+    );
+    $results['ga:users']       = number_format(
+      $results['ga:users'],
+      0,
+      '.',
+      ','
+    );
+    $results['ga:newUsers']       = number_format(
+      $results['ga:newUsers'],
+      0,
+      '.',
+      ','
+    );
     $results['ga:bounceRate']      = number_format(
         $results['ga:bounceRate'],
         2
