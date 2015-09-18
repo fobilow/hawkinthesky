@@ -126,9 +126,12 @@ class Hawk
     );
 
     $properties = [];
-    foreach($result as $row)
+    if($result)
     {
-      $properties[$row['ga_property_id']] = $row;
+      foreach($result as $row)
+      {
+        $properties[$row['ga_property_id']] = $row;
+      }
     }
 
     return $properties;

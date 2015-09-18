@@ -4,33 +4,26 @@ include_once '../vendor/autoload.php';
 include_once 'inc.php';
 session_start();
 
-if(isset($_GET['view']))
+$view = isset($_GET['view']) ? $_GET['view'] : '';
+switch($_GET['view'])
 {
-  switch($_GET['view'])
-  {
-    case 'month':
-      $start = date('Y-m-01');
-      $end   = date('Y-m-t');
-      break;
-    case 'week':
-      $start = date('Y-m-d', strtotime('-7 days'));
-      $end   = date('Y-m-d');
-      break;
-    case 'day':
-    default:
-      $start = date('Y-m-d');
-      $end   = date('Y-m-d');
-      break;
-  }
-}
-else
-{
-  $start = date('Y-m-d');
-  $end   = date('Y-m-d');
+  case 'month':
+    $start = date('Y-m-01');
+    $end   = date('Y-m-t');
+    break;
+  case 'week':
+    $start = date('Y-m-d', strtotime('-7 days'));
+    $end   = date('Y-m-d');
+    break;
+  case 'day':
+  default:
+    $start = date('Y-m-d');
+    $end   = date('Y-m-d');
+    break;
 }
 
 $errors        = [];
-$statsRows     = [];
+$stats         = [];
 $client_id     = Hawk::$config['ga']['client_id'];
 $client_secret = Hawk::$config['ga']['client_secret'];
 $redirect_uri  = Hawk::$config['ga']['redirect_uri'];
@@ -60,56 +53,44 @@ if($client->isAccessTokenExpired())
 if($client->getAccessToken() && !$client->isAccessTokenExpired())
 {
   $_SESSION['access_token'] = $client->getAccessToken();
-  $properties               = Hawk::registerProperties($service);
-
-  $_SESSION['user'] = $properties[0]['owner'];
-  $storedProperties = Hawk::getProperties($_SESSION['user'], true);
+  $storedProperties         = Hawk::getProperties($_SESSION['user']);
 
   $dataGa       = $service->data_ga;
   $realTimeData = $service->data_realtime;
 
-  $stats = [];
-  foreach($properties as $property)
+  foreach($storedProperties as $property)
   {
-    //skip properties that have been disabled
-    if(isset($storedProperties[$property['ga_property_id']])
-      && $storedProperties[$property['ga_property_id']]['disabled'] == 0
-    )
+    /**
+     * @var Google_Service_Analytics_GaData $data
+     */
+    $metrics = 'ga:sessions,ga:pageviews,ga:uniquePageviews,'
+      . 'ga:users,ga:newUsers,ga:avgPageLoadTime,ga:bounceRate';
+
+    try
     {
-      /**
-       * @var Google_Service_Analytics_GaData $data
-       */
-      $metrics = 'ga:sessions,ga:pageviews,ga:uniquePageviews,'
-        . 'ga:users,ga:newUsers,ga:avgPageLoadTime,ga:bounceRate';
+      $data = $dataGa->get(
+        'ga:' . $property['ga_property_id'],
+        $start,
+        $end,
+        $metrics
+      );
 
-      try
-      {
-        $data = $dataGa->get(
-          'ga:' . $property['ga_property_id'],
-          $start,
-          $end,
-          $metrics
-        );
+      $results             = Hawk::formatStats($data->getTotalsForAllResults());
+      $results['siteName'] = $property['name'];
+      $results['divClass'] = "site_" . substr(md5($property['name']), 0, 8);
 
-        $results              = Hawk::formatStats(
-          $data->getTotalsForAllResults()
-        );
-        $results['siteName'] = $property['name'];
-        $results['divClass'] = "site_" . substr(md5($property['name']), 0, 8);
+      //get real time stats
+      $rData = $realTimeData->get(
+        'ga:' . $property['ga_property_id'],
+        'rt:activeUsers'
+      );
 
-        //get real time stats
-        $rData = $realTimeData->get(
-          'ga:' . $property['ga_property_id'],
-          'rt:activeUsers'
-        );
-
-        $results = array_merge($results, $rData->getTotalsForAllResults());
-        $stats[] = $results;
-      }
-      catch(Exception $e)
-      {
-        $errors[] = $e->getMessage();
-      }
+      $results = array_merge($results, $rData->getTotalsForAllResults());
+      $stats[] = $results;
+    }
+    catch(Exception $e)
+    {
+      $errors[] = $e->getMessage();
     }
   }
 }
