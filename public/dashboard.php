@@ -115,17 +115,14 @@
   {
     $.get('/get-stats.php?view=<?= $view ?>', function(data){
       $.each(data, function(key, stats){
-
-        $('.'+stats.divClass).fadeIn("slow", function(){
-          $('.'+stats.divClass+' .stats-sessions').text(stats['ga:sessions']);
-          $('.'+stats.divClass+' .stats-pageviews').text(stats['ga:pageviews']);
-          $('.'+stats.divClass+' .stats-bouncerate').text(stats['ga:bounceRate']);
-          $('.'+stats.divClass+' .stats-avgpageloadtime').text(stats['ga:avgPageLoadTime']);
-          $('.'+stats.divClass+' .stats-activeusers').text(stats['rt:activeUsers']);
-          $('.'+stats.divClass+' .stats-uniquepageviews').text(stats['ga:uniquePageviews']);
-          $('.'+stats.divClass+' .stats-users').text(stats['ga:users']);
-          $('.'+stats.divClass+' .stats-newusers').text(stats['ga:newUsers']);
-        });
+        $('.'+stats.divClass+' .stats-sessions').text(stats['ga:sessions']);
+        $('.'+stats.divClass+' .stats-pageviews').text(stats['ga:pageviews']);
+        $('.'+stats.divClass+' .stats-bouncerate').text(stats['ga:bounceRate']);
+        $('.'+stats.divClass+' .stats-avgpageloadtime').text(stats['ga:avgPageLoadTime']);
+        $('.'+stats.divClass+' .stats-activeusers').text(stats['rt:activeUsers']);
+        $('.'+stats.divClass+' .stats-uniquepageviews').text(stats['ga:uniquePageviews']);
+        $('.'+stats.divClass+' .stats-users').text(stats['ga:users']);
+        $('.'+stats.divClass+' .stats-newusers').text(stats['ga:newUsers']);
       });
     });
   }
