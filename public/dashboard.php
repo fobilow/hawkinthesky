@@ -128,6 +128,6 @@
   setInterval(getStats, 60000);
 
   $(document).ready(function(){
-    $('.bxslider').bxSlider({controls: false, auto: true, pause: 10000});
+    $('.bxslider').bxSlider({speed: 1000, controls: false, auto: true, pause: 10000});
   });
 </script>
